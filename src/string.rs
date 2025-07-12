@@ -1,6 +1,4 @@
 use crate::list::BuildStringChars;
-use crate::list::StringCharsTy;
-use crate::list::TypeList;
 use typenum::Integer;
 
 pub mod chars {
@@ -10,7 +8,7 @@ pub mod chars {
 
     macro_rules! def_char {
         ($name:ident, $num:ty) => {
-            #[allow(non_camel_case_types)]
+            #[allow(non_camel_case_types, unused)]
             pub struct $name;
 
             impl Character for $name {
@@ -124,16 +122,7 @@ pub trait Character {
     type Number: Integer;
 }
 
-pub trait CharString:
-    BuildStringChars<<Self as StringCharsTy>::Result> + StringCharsTy + TypeList
-{
-}
-
-impl<S: BuildStringChars<<S as StringCharsTy>::Result> + StringCharsTy + TypeList> CharString
-    for S
-{
-}
-
+#[repr(C)]
 pub struct TString<T> {
     val: T,
     len: usize,
@@ -147,13 +136,12 @@ impl<T: 'static> TString<T> {
         }
     }
 
-    pub fn get(&'static self) -> &'static str {
-        unsafe {
-            let data = std::slice::from_raw_parts(&self.val as *const _ as *const u8, self.len);
-            match std::str::from_utf8(data) {
-                Ok(v) => v,
-                Err(_) => "",
-            }
+    pub const fn get(&self) -> &str {
+        let ptr = (&raw const self.val).cast::<u8>();
+        let data = unsafe { std::slice::from_raw_parts(ptr, self.len) };
+        match std::str::from_utf8(data) {
+            Ok(x) => x,
+            Err(_) => "",
         }
     }
 }

@@ -1,15 +1,15 @@
 use crate::string::Character;
 use std::marker::PhantomData;
-use typenum::assert_type_eq;
 use typenum::Integer;
+use typenum::assert_type_eq;
 
 pub trait TypeList {
     type Head;
-    type Prev: TypeList;
-    type Tail;
+    type Tail: TypeList;
+    type Last;
     type PushFront<T>: TypeList;
     type PushBack<T>: TypeList;
-    type RemoveFront;
+    type PopFront;
     type PopBack;
 
     /// Appends `L` onto this list in forward order by first reversing `L` and
@@ -29,88 +29,87 @@ pub trait TypeList {
     /// Reverses the list.
     type Reverse: TypeList;
 
-    type RemoveFrontInner<Next>;
-}
-
-pub trait TypePair<A, B> {
-    type ValA;
-    type ValB;
-}
-
-impl<A, B> TypePair<A, B> for (A, B) {
-    type ValA = A;
-    type ValB = B;
+    type PopFrontInner<Next>;
 }
 
 pub struct TypeListElem<T>(PhantomData<T>);
 
-impl<Prev: TypeList, T> TypeList for (Prev, TypeListElem<T>) {
-    type Head = Prev::Head;
-    type Prev = Prev;
-    type Tail = TypeListElem<T>;
-    type PushFront<T1> = (Prev::PushFront<T1>, TypeListElem<T>);
-    type PushBack<T1> = ((Prev, TypeListElem<T>), TypeListElem<T1>);
-    type RemoveFront = Prev::RemoveFrontInner<T>;
-    type PopBack = (T, Prev);
+impl<Tail: TypeList, T> TypeList for (Tail, TypeListElem<T>) {
+    type Head = Tail::Head;
+    type Tail = Tail;
+    type Last = TypeListElem<T>;
+    type PushFront<T1> = (Tail::PushFront<T1>, TypeListElem<T>);
+    type PushBack<T1> = ((Tail, TypeListElem<T>), TypeListElem<T1>);
+    type PopFront = Tail::PopFrontInner<T>;
+    type PopBack = Tail;
 
-    type Append<L> = <L::Reverse as TypeList>::RevAppendTo<Self>
+    type Append<L>
+        = <L::Reverse as TypeList>::RevAppendTo<Self>
     where
         L: TypeList;
-    type AppendTo<L> = L::Append<Self>
+    type AppendTo<L>
+        = L::Append<Self>
     where
         L: TypeList;
-    type RevAppendTo<L> = Prev::RevAppendTo<L::PushBack<T>>
+    type RevAppendTo<L>
+        = Tail::RevAppendTo<L::PushBack<T>>
     where
         L: TypeList;
     type Reverse = Self::RevAppendTo<()>;
 
-    type RemoveFrontInner<Next> = (Prev::RemoveFrontInner<T>, Next);
+    type PopFrontInner<Next> = (Tail::PopFrontInner<T>, Next);
 }
 
 impl<T> TypeList for (TypeListElem<T>,) {
     type Head = TypeListElem<T>;
-    type Prev = ();
-    type Tail = TypeListElem<T>;
+    type Tail = ();
+    type Last = TypeListElem<T>;
     type PushFront<T1> = ((TypeListElem<T1>,), TypeListElem<T>);
     type PushBack<T1> = ((TypeListElem<T>,), TypeListElem<T1>);
-    type RemoveFront = ();
-    type PopBack = (T, ());
+    type PopFront = ();
+    type PopBack = ();
 
-    type Append<L> = <L::Reverse as TypeList>::RevAppendTo<Self>
+    type Append<L>
+        = <L::Reverse as TypeList>::RevAppendTo<Self>
     where
         L: TypeList;
-    type AppendTo<L> = L::PushBack<T>
+    type AppendTo<L>
+        = L::PushBack<T>
     where
         L: TypeList;
-    type RevAppendTo<L> = L::PushBack<T>
+    type RevAppendTo<L>
+        = L::PushBack<T>
     where
         L: TypeList;
     type Reverse = (TypeListElem<T>,);
 
-    type RemoveFrontInner<Next> = (Next,);
+    type PopFrontInner<Next> = (Next,);
 }
 
 impl TypeList for () {
     type Head = ();
-    type Prev = ();
     type Tail = ();
+    type Last = ();
     type PushFront<T> = Self::PushBack<T>;
     type PushBack<T> = (TypeListElem<T>,);
-    type RemoveFront = ();
-    type PopBack = ((), ());
+    type PopFront = ();
+    type PopBack = ();
 
-    type Append<L> = L
+    type Append<L>
+        = L
     where
         L: TypeList;
-    type AppendTo<L> = L
+    type AppendTo<L>
+        = L
     where
         L: TypeList;
-    type RevAppendTo<L> = L
+    type RevAppendTo<L>
+        = L
     where
         L: TypeList;
     type Reverse = Self;
 
-    type RemoveFrontInner<Next> = ();
+    type PopFrontInner<Next> = ();
 }
 
 pub trait BuildStringChars<T: 'static> {
@@ -118,14 +117,14 @@ pub trait BuildStringChars<T: 'static> {
     const LEN: usize;
 }
 
-impl<Prev, C, T> BuildStringChars<(T, u8)> for (Prev, C)
+impl<Tail, C, T> BuildStringChars<(T, u8)> for (Tail, C)
 where
-    Prev: BuildStringChars<T>,
+    Tail: BuildStringChars<T>,
     C: Character,
     T: 'static,
 {
-    const RESULT: (T, u8) = (Prev::RESULT, <C::Number as Integer>::I8 as u8);
-    const LEN: usize = Prev::LEN + 1;
+    const RESULT: (T, u8) = (Tail::RESULT, <C::Number as Integer>::I8 as u8);
+    const LEN: usize = Tail::LEN + 1;
 }
 
 impl<C: Character> BuildStringChars<u8> for (C,) {

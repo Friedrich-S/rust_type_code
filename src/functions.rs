@@ -31,13 +31,16 @@ pub trait IoState: TypeList {
 }
 
 impl<L: TypeList> IoState for L {
-    type Print<S> = Self::AppendTo<S> where S: IoState;
+    type Print<S>
+        = Self::Append<S>
+    where
+        S: IoState;
 }
 
 /// Print a string to the IO state output.
-pub struct Print<S: TypeList>(PhantomData<S>);
+pub struct Print;
 
-impl<Str: TypeList> Function<()> for Print<Str> {
+impl<Str: TypeList> Function<(Str,)> for Print {
     type Result = ();
     type Io = Str;
 }
@@ -69,9 +72,11 @@ mod tests {
     use crate::type_str;
     use static_assertions::assert_impl_all;
 
+    #[allow(unused)]
     type Str = type_str!(H I !);
-    type Call = super::Call<Print<Str>, ()>;
-    assert_impl_all!(Print<Str>: Function<()>);
+    #[allow(unused)]
+    type Call = super::Call<Print, (Str,)>;
+    assert_impl_all!(Print: Function<(Str,)>);
     assert_impl_all!(Call: FunctionCall);
     assert_impl_all!(Then<Call, Call>: Function<()>);
     assert_impl_all!(Then<Then<Call, Call>, Call>: Function<()>);

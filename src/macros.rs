@@ -1,292 +1,293 @@
-// ToDo: refactor to use virtual tt construction to define using left-recursive list syntax
 #[macro_export]
-macro_rules! parse_chars {
-    ($char:tt $($rest:tt)*) => { crate::parse_chars_inner!([$($rest)*] [ (TypeListElem<crate::parse_char!($char)>,) ]) };
-}
-
-#[macro_export]
-macro_rules! parse_chars_inner {
-    ([$char:tt $($rest:tt)*] [$($res:tt)*]) => { crate::parse_chars_inner!([$($rest)*] [($($res)*, TypeListElem<crate::parse_char!($char)>)]) };
-    ([] [$($res:tt)*]) => { $($res)* };
-}
-
-#[macro_export]
-macro_rules! parse_char {
+macro_rules! type_char {
     // Special cases to implement characters that cannot be parsed by macros
     (__) => {
-        crate::string::chars::Space
+        $crate::string::chars::Space
     };
 
     (!) => {
-        crate::string::chars::ExclamationMark
+        $crate::string::chars::ExclamationMark
     };
     (#) => {
-        crate::string::chars::Hashtag
+        $crate::string::chars::Hashtag
     };
     (%) => {
-        crate::string::chars::Percent
+        $crate::string::chars::Percent
     };
     (&) => {
-        crate::string::chars::Ampersand
+        $crate::string::chars::Ampersand
     };
     (*) => {
-        crate::string::chars::Star
+        $crate::string::chars::Star
     };
     (+) => {
-        crate::string::chars::Plus
+        $crate::string::chars::Plus
     };
     (,) => {
-        crate::string::chars::Comma
+        $crate::string::chars::Comma
     };
     (-) => {
-        crate::string::chars::Minus
+        $crate::string::chars::Minus
     };
     (.) => {
-        crate::string::chars::Dot
+        $crate::string::chars::Dot
     };
     (/) => {
-        crate::string::chars::Slash
+        $crate::string::chars::Slash
     };
     (0) => {
-        crate::string::chars::Zero
+        $crate::string::chars::Zero
     };
     (1) => {
-        crate::string::chars::One
+        $crate::string::chars::One
     };
     (2) => {
-        crate::string::chars::Two
+        $crate::string::chars::Two
     };
     (3) => {
-        crate::string::chars::Three
+        $crate::string::chars::Three
     };
     (4) => {
-        crate::string::chars::Four
+        $crate::string::chars::Four
     };
     (5) => {
-        crate::string::chars::Five
+        $crate::string::chars::Five
     };
     (6) => {
-        crate::string::chars::Six
+        $crate::string::chars::Six
     };
     (7) => {
-        crate::string::chars::Seven
+        $crate::string::chars::Seven
     };
     (8) => {
-        crate::string::chars::Eight
+        $crate::string::chars::Eight
     };
     (9) => {
-        crate::string::chars::Nine
+        $crate::string::chars::Nine
     };
     (:) => {
-        crate::string::chars::Colon
+        $crate::string::chars::Colon
     };
     (;) => {
-        crate::string::chars::SemiColon
+        $crate::string::chars::SemiColon
     };
     (<) => {
-        crate::string::chars::LessThan
+        $crate::string::chars::LessThan
     };
     (=) => {
-        crate::string::chars::Equals
+        $crate::string::chars::Equals
     };
     (>) => {
-        crate::string::chars::GreaterThan
+        $crate::string::chars::GreaterThan
     };
     (?) => {
-        crate::string::chars::Questionmark
+        $crate::string::chars::Questionmark
     };
     (A) => {
-        crate::string::chars::A
+        $crate::string::chars::A
     };
     (B) => {
-        crate::string::chars::B
+        $crate::string::chars::B
     };
     (C) => {
-        crate::string::chars::C
+        $crate::string::chars::C
     };
     (D) => {
-        crate::string::chars::D
+        $crate::string::chars::D
     };
     (E) => {
-        crate::string::chars::E
+        $crate::string::chars::E
     };
     (F) => {
-        crate::string::chars::F
+        $crate::string::chars::F
     };
     (G) => {
-        crate::string::chars::G
+        $crate::string::chars::G
     };
     (H) => {
-        crate::string::chars::H
+        $crate::string::chars::H
     };
     (I) => {
-        crate::string::chars::I
+        $crate::string::chars::I
     };
     (J) => {
-        crate::string::chars::J
+        $crate::string::chars::J
     };
     (K) => {
-        crate::string::chars::K
+        $crate::string::chars::K
     };
     (L) => {
-        crate::string::chars::L
+        $crate::string::chars::L
     };
     (M) => {
-        crate::string::chars::M
+        $crate::string::chars::M
     };
     (N) => {
-        crate::string::chars::N
+        $crate::string::chars::N
     };
     (O) => {
-        crate::string::chars::O
+        $crate::string::chars::O
     };
     (P) => {
-        crate::string::chars::P
+        $crate::string::chars::P
     };
     (Q) => {
-        crate::string::chars::Q
+        $crate::string::chars::Q
     };
     (R) => {
-        crate::string::chars::R
+        $crate::string::chars::R
     };
     (S) => {
-        crate::string::chars::S
+        $crate::string::chars::S
     };
     (T) => {
-        crate::string::chars::T
+        $crate::string::chars::T
     };
     (U) => {
-        crate::string::chars::U
+        $crate::string::chars::U
     };
     (V) => {
-        crate::string::chars::V
+        $crate::string::chars::V
     };
     (W) => {
-        crate::string::chars::W
+        $crate::string::chars::W
     };
     (X) => {
-        crate::string::chars::X
+        $crate::string::chars::X
     };
     (Y) => {
-        crate::string::chars::Y
+        $crate::string::chars::Y
     };
     (Z) => {
-        crate::string::chars::Z
+        $crate::string::chars::Z
     };
     (^) => {
-        crate::string::chars::Caret
+        $crate::string::chars::Caret
     };
     (a) => {
-        crate::string::chars::a
+        $crate::string::chars::a
     };
     (b) => {
-        crate::string::chars::b
+        $crate::string::chars::b
     };
     (c) => {
-        crate::string::chars::c
+        $crate::string::chars::c
     };
     (d) => {
-        crate::string::chars::d
+        $crate::string::chars::d
     };
     (e) => {
-        crate::string::chars::e
+        $crate::string::chars::e
     };
     (f) => {
-        crate::string::chars::f
+        $crate::string::chars::f
     };
     (g) => {
-        crate::string::chars::g
+        $crate::string::chars::g
     };
     (h) => {
-        crate::string::chars::h
+        $crate::string::chars::h
     };
     (i) => {
-        crate::string::chars::i
+        $crate::string::chars::i
     };
     (j) => {
-        crate::string::chars::j
+        $crate::string::chars::j
     };
     (k) => {
-        crate::string::chars::k
+        $crate::string::chars::k
     };
     (l) => {
-        crate::string::chars::l
+        $crate::string::chars::l
     };
     (m) => {
-        crate::string::chars::m
+        $crate::string::chars::m
     };
     (n) => {
-        crate::string::chars::n
+        $crate::string::chars::n
     };
     (o) => {
-        crate::string::chars::o
+        $crate::string::chars::o
     };
     (p) => {
-        crate::string::chars::p
+        $crate::string::chars::p
     };
     (q) => {
-        crate::string::chars::q
+        $crate::string::chars::q
     };
     (r) => {
-        crate::string::chars::r
+        $crate::string::chars::r
     };
     (s) => {
-        crate::string::chars::s
+        $crate::string::chars::s
     };
     (t) => {
-        crate::string::chars::t
+        $crate::string::chars::t
     };
     (u) => {
-        crate::string::chars::u
+        $crate::string::chars::u
     };
     (v) => {
-        crate::string::chars::v
+        $crate::string::chars::v
     };
     (w) => {
-        crate::string::chars::w
+        $crate::string::chars::w
     };
     (x) => {
-        crate::string::chars::x
+        $crate::string::chars::x
     };
     (y) => {
-        crate::string::chars::y
+        $crate::string::chars::y
     };
     (z) => {
-        crate::string::chars::z
+        $crate::string::chars::z
     };
     (|) => {
-        crate::string::chars::VericalLine
+        $crate::string::chars::VericalLine
     };
     (~) => {
-        crate::string::chars::Tilde
+        $crate::string::chars::Tilde
     };
 }
 
 #[macro_export]
 macro_rules! type_str {
-    ($($t:tt)*) => {
-        <$crate::parse_chars!($($t)*) as TypeList>::Reverse
+    (@parse [] [ $($res:tt)* ]) => {
+        $($res)*
+    };
+    (@parse
+        [ $char:tt $($rest:tt)* ]
+        [ $($res:tt)* ]
+    ) => {
+        $crate::type_str!(@parse [ $($rest)* ] [ ($($res)*, $crate::list::TypeListElem<$crate::type_char!($char)>) ])
+    };
+    ($char:tt $($rest:tt)*) => {
+        $crate::type_str!(@parse [ $($rest)* ] [ ($crate::list::TypeListElem<$crate::type_char!($char)>,) ])
     };
 }
 
 #[macro_export]
 macro_rules! compile_string {
     ($name:ident = $tgt:ty) => {
-        const $name: $crate::string::TString<
-            <<$tgt as TypeList>::Reverse as StringCharsTy>::Result,
-        > = $crate::string::TString::new::<<$tgt as TypeList>::Reverse>();
+        const $name: $crate::string::TString<<$tgt as StringCharsTy>::Result> =
+            $crate::string::TString::new::<$tgt>();
     };
 }
 
 #[macro_export]
 macro_rules! chain {
-    (io: $($rest:ty),* $(,)?) => {
-        <chain! { $($rest),* } as Function<()>>::Io
+    (io:
+        $($rest:tt)*
+    ) => {
+        <$crate::chain!(@inner $($rest)*) as Function<()>>::Io
     };
-    ($head:ty, $($rest:ty),*) => {
-        Then<$head, chain! { $($rest),* }>
+    (@inner $func:ident ( $($($arg:tt)*),* $(,)? );) => {
+        Call<$func, ( $($($arg)*,)* )>
     };
-    ($head:ty) => {
-        $head
+    (@inner
+        $func:ident ( $($($arg:tt)*),* $(,)? );
+        $($rest:tt)*
+    ) => {
+        Then<Call<$func, ( $($($arg)*,)* )>, $crate::chain!(@inner $($rest)*)>
     };
 }
