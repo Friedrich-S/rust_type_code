@@ -3,8 +3,8 @@
 This repository contains a personal experiment to see to what extent it is
 possible to execute code at compile time using only the Rust generics system.
 
-A more detailed blog post will follow where the concepts used here are
-explained.
+There is a series of [blog posts](https://fscode.de/blog/rust-type-code-part1/)
+detailing the development of this project.
 
 ## Basic Idea
 
